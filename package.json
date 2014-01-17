@@ -1,0 +1,20 @@
+{
+  "name": "pivotaljs",
+  "version": "0.0.1",
+  "description": "Pivotal Tracker API for V5",
+  "repository": "https://github.com/rompetoto/pivotaljs",
+  "keywords" : [ "pivotal", "tracker", "pivotaltracker", "api", "v5" ],
+  "author": "Richard van der Dys",
+  "scripts": {
+    "test": ""
+  },
+  "dependencies": {
+    "request": "latest",
+    "underscore": "latest"
+  },
+  "devDependencies": {
+    "mocha": "latest",
+    "should": "latest"
+  },
+  "main": "index.js"
+}
