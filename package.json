@@ -1,12 +1,12 @@
 {
   "name": "pivotaljs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Pivotal Tracker API for V5",
   "repository": "https://github.com/rompetoto/pivotaljs",
   "keywords" : [ "pivotal", "tracker", "pivotaltracker", "api", "v5" ],
   "author": "Richard van der Dys",
   "scripts": {
-    "test": ""
+    "test": "node node_modules/mocha/bin/mocha test/"
   },
   "dependencies": {
     "request": "latest",
@@ -14,7 +14,8 @@
   },
   "devDependencies": {
     "mocha": "latest",
-    "should": "latest"
+    "should": "latest",
+    "nock": "latest"
   },
   "main": "index.js"
 }

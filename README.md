@@ -3,6 +3,10 @@ pivotaljs
 
 Pivotal Tracker API for V5
 
+### Documentation
+
+<http://rompetoto.github.io/pivotaljs>
+
 ### Usage
 
 ```
