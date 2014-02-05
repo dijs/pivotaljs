@@ -141,7 +141,7 @@ Pivotal.prototype.api = function api(method, path, options, callback) {
 		url: this.baseUrl + path,
 		json: true,
 		headers: {
-			'X-TrackerapiToken': this.apiToken
+			'X-TrackerToken': this.apiToken
 		}
 	}, options);
 	request(opts, function(err, response, result) {
