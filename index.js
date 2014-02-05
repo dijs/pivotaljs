@@ -77,22 +77,27 @@ Pivotal.prototype.exportStories = function exportStories(projectId, stories, cal
 Pivotal.prototype.postAttachment = function postAttachment(projectId, storyId, filepath, type, comment, callback) {
 	var that = this;
 	fs.readFile(filepath, function(err, contents) {
-		that.api('post', 'projects/' + projectId + '/uploads', {
+		request.post({
+			url: "https://www.pivotaltracker.com/services/v5/projects/" + projectId + "/uploads",
 			multipart: [{
-				'Content-Disposition': 'form-data; name=\'file\'; filename=\'' + path.basename(filepath) + '}\'',
-				'Content-Type': type,
-				'body': contents
-			}]
-		}, function(err, upload) {
-			if (err) {
+				"Content-Disposition": "form-data; name=\"file\"; filename=\"" + path.basename(filepath) + "\"",
+				"Content-Type": type,
+				"body": contents
+			}],
+			headers: {
+				"X-TrackerToken": that.apiToken
+			}
+		}, function(err, res, upload) {
+			if (err || upload.kind == 'error') {
 				callback(err, {
-					success: false
+					success: false,
+					error: upload ? upload.error + ' (' + upload.general_problem + ')' : err
 				});
 			} else {
 				that.api('post', 'projects/' + projectId + '/stories/' + storyId + '/comments', {
 					json: {
 						text: comment,
-						file_attachments: [upload]
+						file_attachments: [JSON.parse(upload)]
 					}
 				}, callback);
 			}
