@@ -1,9 +1,15 @@
 {
   "name": "pivotaljs",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Pivotal Tracker API for V5",
   "repository": "https://github.com/rompetoto/pivotaljs",
-  "keywords" : [ "pivotal", "tracker", "pivotaltracker", "api", "v5" ],
+  "keywords": [
+    "pivotal",
+    "tracker",
+    "pivotaltracker",
+    "api",
+    "v5"
+  ],
   "author": "Richard van der Dys",
   "scripts": {
     "test": "node node_modules/mocha/bin/mocha test/"
