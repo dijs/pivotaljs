@@ -1,5 +1,5 @@
 'use strict';
-  
+
 var request = require('request'),
 	_ = require('underscore'),
 	querystring = require('querystring'),
@@ -32,13 +32,13 @@ Pivotal.prototype.updateStory = function updateStory(projectId, storyId, params,
 /**
  * Get stories from Pivotal project
  * @param  {String}   projectId Pivotal project id
+ * @param  {Integer}  offset Initial pagination offset
+ * @param  {Integer}  limit Pagination limit for each response
  * @param  {Object}   [options]   Extra parameters
  * @param  {Function} [callback]  function(error, stories)
  */
-Pivotal.prototype.getStories = function getStories(projectId, options, callback) {
-	this.api('get', 'projects/' + projectId + '/stories', {
-		qs: options
-	}, callback);
+Pivotal.prototype.getStories = function getStories(projectId, offset, limit, options, callback, completed) {
+	this.paginated('projects/' + projectId + '/stories', offset, limit, options, callback, completed);
 };
 
 /**
@@ -138,6 +138,33 @@ Pivotal.prototype.createStory = function createStory(projectId, params, callback
 	this.api('post', 'projects/' + projectId + '/stories', {
 		body: params
 	}, callback);
+};
+
+Pivotal.prototype.paginated = function(path, offset, limit, options, callback, completed) {
+	var current = offset;
+	var that = this;
+	this.api('get', path, {
+		qs: _.extend({
+			offset: offset,
+			limit: limit,
+			envelope: true
+		}, options)
+	}, function(err, res) {
+		if (err) {
+			callback(err);
+			completed(err);
+		} else {
+			current += res.pagination.returned;
+			callback(err, res.data, res.pagination, function(cont) {
+				var left = res.pagination.total - current;
+				if (cont && left > 0) {
+					that.paginated(path, current, Math.min(left, res.pagination.limit), options, callback, completed);
+				} else {
+					completed();
+				}
+			});
+		}
+	});
 };
 
 Pivotal.prototype.api = function api(method, path, options, callback) {
