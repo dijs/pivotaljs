@@ -30,15 +30,39 @@ Pivotal.prototype.updateStory = function updateStory(projectId, storyId, params,
 };
 
 /**
- * Get stories from Pivotal project
- * @param  {String}   projectId Pivotal project id
- * @param  {Integer}  offset Initial pagination offset
- * @param  {Integer}  limit Pagination limit for each response
+ * Get paginated stories from Pivotal project
+ * @param  {String}   projectId   Pivotal project id
  * @param  {Object}   [options]   Extra parameters
- * @param  {Function} [callback]  function(error, stories)
+ * @param  {Function} [callback]  function(error, stories, pagination, nextPage)
+ * @param  {Function} [completed] function(error)
+ * @param  {Integer}  [offset]    Initial pagination offset
+ * @param  {Integer}  [limit]     Pagination limit for each response
  */
-Pivotal.prototype.getStories = function getStories(projectId, offset, limit, options, callback, completed) {
-	this.paginated('projects/' + projectId + '/stories', offset, limit, options, callback, completed);
+Pivotal.prototype.getStories = function getStories(projectId, options, callback, completed, offset, limit) {
+	this.paginated('projects/' + projectId + '/stories', offset || 0, limit || 128, options, callback, completed);
+};
+
+/**
+ * Get current release stories from Pivotal project
+ * @param  {String}   projectId projectId Pivotal project id
+ * @param  {Function} callback  [description]
+ * @return {[type]}             [description]
+ */
+Pivotal.prototype.getCurrentReleases = function(projectId, callback) {
+	this.getStories(projectId, {
+		filter: "type:Release state:unstarted",
+		date_format: "millis"
+	}, function(err, stories) {
+		callback(err, _.chain(stories || [])
+			.filter(function(story){
+				return story.planned_iteration_number !== undefined;
+			})
+			.sortBy(function(story){
+				return story.deadline;
+			})
+			.value()
+		);
+	});
 };
 
 /**

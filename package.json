@@ -1,6 +1,6 @@
 {
   "name": "pivotaljs",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Pivotal Tracker API for V5",
   "repository": "https://github.com/rompetoto/pivotaljs",
   "keywords": [
