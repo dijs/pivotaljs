@@ -43,26 +43,30 @@ Pivotal.prototype.getStories = function getStories(projectId, options, callback,
 };
 
 /**
- * Get current release stories from Pivotal project
+ * Get current iteration stories from Pivotal project
  * @param  {String}   projectId projectId Pivotal project id
  * @param  {Function} callback  [description]
  * @return {[type]}             [description]
  */
-Pivotal.prototype.getCurrentReleases = function(projectId, callback) {
-	this.getStories(projectId, {
-		filter: "type:Release state:unstarted",
-		date_format: "millis"
-	}, function(err, stories) {
-		callback(err, _.chain(stories || [])
-			.filter(function(story){
-				return story.planned_iteration_number !== undefined;
-			})
-			.sortBy(function(story){
-				return story.deadline;
-			})
-			.value()
-		);
+Pivotal.prototype.getCurrentIterations = function(projectId, callback) {
+	this.api('get', 'projects/' + projectId + '/iterations', {
+		qs: {
+			scope: 'current',
+			date_format: 'millis'
+		}
+	}, function(err, iterations) {
+		if (_.isFunction(callback)) {
+			if (err || !iterations) {
+				callback(err);
+			}else{
+				callback(false, iterations);
+			}
+		}
 	});
+};
+
+Pivotal.prototype.getMemberships = function updateStory(projectId, callback) {
+	this.api('get', 'projects/' + projectId + '/memberships', {}, callback);
 };
 
 /**
