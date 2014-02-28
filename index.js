@@ -43,6 +43,16 @@ Pivotal.prototype.getStories = function getStories(projectId, options, callback,
 };
 
 /**
+ * Get tasks from Pivotal story
+ * @param  {String}   projectId Pivotal project id
+ * @param  {String}   storyId   Pivotal story id
+ * @param  {Function} [callback]  function(error, tasks)
+ */
+Pivotal.prototype.getTasks = function getTasks(projectId, storyId, callback) {
+	this.api('get', 'projects/' + projectId + '/stories/' + storyId + '/tasks', {}, callback);
+};
+
+/**
  * Get current iteration stories from Pivotal project
  * @param  {String}   projectId projectId Pivotal project id
  * @param  {Function} callback  [description]
