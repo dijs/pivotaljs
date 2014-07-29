@@ -30,6 +30,15 @@ Pivotal.prototype.updateStory = function updateStory(projectId, storyId, params,
 };
 
 /**
+ * Obtains a Pivotal Story
+ * @param  {String}   storyId   Pivotal story id
+ * @param  {Function} [callback]  function(error, response)
+ */
+Pivotal.prototype.getStory = function getStory(storyId, callback) {
+	this.api('get', '/stories/' + storyId, {}, callback);
+};
+
+/**
  * Get paginated stories from Pivotal project
  * @param  {String}   projectId   Pivotal project id
  * @param  {Object}   [options]   Extra parameters
@@ -40,6 +49,18 @@ Pivotal.prototype.updateStory = function updateStory(projectId, storyId, params,
  */
 Pivotal.prototype.getStories = function getStories(projectId, options, callback, completed, offset, limit) {
 	this.paginated('projects/' + projectId + '/stories', offset || 0, limit || 128, options, callback, completed);
+};
+
+Pivotal.prototype.getStoryActivity = function getStoryActivity(projectId, storyId, callback, options) {
+	this.api('get', 'projects/' + projectId + '/stories/' + storyId + '/activity', {
+		qs: options || {}
+	}, callback);
+};
+
+Pivotal.prototype.getMyActivity = function getMyActivity(callback, options) {
+	this.api('get', 'my/activity', {
+		qs: options || {}
+	}, callback);
 };
 
 /**
@@ -68,7 +89,7 @@ Pivotal.prototype.getCurrentIterations = function(projectId, callback) {
 		if (_.isFunction(callback)) {
 			if (err || !iterations) {
 				callback(err);
-			}else{
+			} else {
 				callback(false, iterations);
 			}
 		}
@@ -91,14 +112,13 @@ Pivotal.prototype.getComments = function getStories(projectId, storyId, callback
 
 /**
  * Export stories from Pivotal
- * @param  {String}    projectId Pivotal project id
  * @param  {String[]}  stories   List of story id's
  * @param  {Function}  [callback]  function(error, response)
  */
-Pivotal.prototype.exportStories = function exportStories(projectId, stories, callback) {
-	this.api('post', 'projects/' + projectId + '/export', {
+Pivotal.prototype.exportStories = function exportStories(stories, callback) {
+	this.api('post', 'stories/export', {
 		body: querystring.stringify({
-			'story_ids[]': stories
+			'ids[]': stories
 		})
 	}, callback);
 };
@@ -179,7 +199,6 @@ Pivotal.prototype.createStory = function createStory(projectId, params, callback
 };
 
 Pivotal.prototype.paginated = function(path, offset, limit, options, callback, completed) {
-	var current = offset;
 	var that = this;
 	this.api('get', path, {
 		qs: _.extend({
@@ -188,17 +207,20 @@ Pivotal.prototype.paginated = function(path, offset, limit, options, callback, c
 			envelope: true
 		}, options)
 	}, function(err, res) {
-		if (err) {
-			callback(err);
-			completed(err);
+		if (err || !res.pagination) {
+			completed && completed(err || res);
 		} else {
-			current += res.pagination.returned;
-			callback(err, res.data, res.pagination, function(cont) {
-				var left = res.pagination.total - current;
-				if (cont && left > 0) {
-					that.paginated(path, current, Math.min(left, res.pagination.limit), options, callback, completed);
+			offset += res.pagination.returned;
+			callback && callback(null, res.data, res.pagination, function(cont) {
+				if (cont) {
+					var left = res.pagination.total - offset;
+					if (left > 0) {
+						that.paginated(path, offset, Math.min(left, limit), options, callback, completed);
+					} else {
+						completed && completed();
+					}
 				} else {
-					completed();
+					completed && completed();
 				}
 			});
 		}

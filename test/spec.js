@@ -7,7 +7,7 @@ require('should');
 nock.disableNetConnect();
 
 nock('https://www.pivotaltracker.com')
-	.get('/services/v5/projects/12345/stories')
+	.get('/services/v5/projects/12345/stories?offset=0&limit=128&envelope=true')
 	.reply(200, [])
 	.post('/services/v5/projects/12345/uploads')
 	.reply(200, '{"name":"hello"}')
@@ -17,7 +17,7 @@ nock('https://www.pivotaltracker.com')
 describe('Pivotal Tracker API', function() {
 
 	it('should get stories', function(done) {
-		pivotal.getStories('12345', {}, function(err, stories) {
+		pivotal.getStories('12345', {}, function(cb){ cb(); }, function(err, stories) {
 			done();
 		});
 	});
