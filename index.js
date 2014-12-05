@@ -38,6 +38,10 @@ Pivotal.prototype.getStory = function getStory(storyId, callback) {
 	this.api('get', '/stories/' + storyId, {}, callback);
 };
 
+Pivotal.prototype.getProjects = function getProjects(callback) {
+	this.api('get', '/projects', {}, callback);
+};
+
 /**
  * Get paginated stories from Pivotal project
  * @param  {String}   projectId   Pivotal project id
@@ -71,6 +75,10 @@ Pivotal.prototype.getMyActivity = function getMyActivity(callback, options) {
  */
 Pivotal.prototype.getTasks = function getTasks(projectId, storyId, callback) {
 	this.api('get', 'projects/' + projectId + '/stories/' + storyId + '/tasks', {}, callback);
+};
+
+Pivotal.prototype.getIterations = function getIterations(projectId, options, callback, completed, offset, limit) {
+	this.paginated('projects/' + projectId + '/iterations', offset || 0, limit || 128, options, callback, completed);
 };
 
 /**
