@@ -55,6 +55,10 @@ Pivotal.prototype.getStories = function getStories(projectId, options, callback,
 	this.paginated('projects/' + projectId + '/stories', offset || 0, limit || 128, options, callback, completed);
 };
 
+Pivotal.prototype.getActivity = function getActivity(projectId, options, callback, completed, offset, limit) {
+	this.paginated('projects/' + projectId + '/activity', offset || 0, limit || 128, options, callback, completed);
+};
+
 Pivotal.prototype.getStoryActivity = function getStoryActivity(projectId, storyId, callback, options) {
 	this.api('get', 'projects/' + projectId + '/stories/' + storyId + '/activity', {
 		qs: options || {}
