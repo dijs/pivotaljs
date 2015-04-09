@@ -1,5 +1,7 @@
 'use strict';
 
+/* jshint node:true */
+
 var request = require('request'),
 	_ = require('underscore'),
 	querystring = require('querystring'),
@@ -8,8 +10,9 @@ var request = require('request'),
 	Pivotal;
 
 /**
- * Pivotal constructor
- * @param {String} [apiToken] API token generated from Pivotal
+ * Pivotal API Interface
+ * @constructor
+ * @param {string} apiToken Pivotal API Token
  */
 Pivotal = function Pivotal(apiToken) {
 	this.apiToken = apiToken;
@@ -17,7 +20,7 @@ Pivotal = function Pivotal(apiToken) {
 };
 
 /**
- * Update a Pivotal Story
+ * Update a story
  * @param  {String}   projectId Pivotal project id
  * @param  {String}   storyId   Pivotal story id
  * @param  {Object}   [params]  Extra parameters
@@ -30,7 +33,7 @@ Pivotal.prototype.updateStory = function updateStory(projectId, storyId, params,
 };
 
 /**
- * Obtains a Pivotal Story
+ * Obtains a story
  * @param  {String}   storyId   Pivotal story id
  * @param  {Function} [callback]  function(error, response)
  */
@@ -38,15 +41,19 @@ Pivotal.prototype.getStory = function getStory(storyId, callback) {
 	this.api('get', '/stories/' + storyId, {}, callback);
 };
 
+/**
+ * Obtains list of projects
+ * @param  {Function} [callback]  function(error, projects)
+ */
 Pivotal.prototype.getProjects = function getProjects(callback) {
 	this.api('get', '/projects', {}, callback);
 };
 
 /**
- * Get paginated stories from Pivotal project
+ * Get paginated stories from project
  * @param  {String}   projectId   Pivotal project id
- * @param  {Object}   [options]   Extra parameters
- * @param  {Function} [callback]  function(error, stories, pagination, nextPage)
+ * @param  {Object}   [options]   Extra options
+ * @param  {Function} [callback]  function(stories, pagination, callback(error or true to stop pagination))
  * @param  {Function} [completed] function(error)
  * @param  {Integer}  [offset]    Initial pagination offset
  * @param  {Integer}  [limit]     Pagination limit for each response
@@ -55,16 +62,37 @@ Pivotal.prototype.getStories = function getStories(projectId, options, callback,
 	this.paginated('projects/' + projectId + '/stories', offset || 0, limit || 128, options, callback, completed);
 };
 
+/**
+ * Get paginated activity from project
+ * @param  {String}   projectId   Pivotal project id
+ * @param  {Object}   [options]   Extra options
+ * @param  {Function} [callback]  function(events, pagination, callback(error or true to stop pagination))
+ * @param  {Function} [completed] function(error)
+ * @param  {Integer}  [offset]    Initial pagination offset
+ * @param  {Integer}  [limit]     Pagination limit for each response
+ */
 Pivotal.prototype.getActivity = function getActivity(projectId, options, callback, completed, offset, limit) {
 	this.paginated('projects/' + projectId + '/activity', offset || 0, limit || 128, options, callback, completed);
 };
 
+/**
+ * Get activity for story
+ * @param  {String}   projectId Pivotal project id
+ * @param  {String}   storyId   Pivotal story id
+ * @param  {Function} [callback]  function(error, events)
+ * @param  {Object}   [options]   Extra options
+ */
 Pivotal.prototype.getStoryActivity = function getStoryActivity(projectId, storyId, callback, options) {
 	this.api('get', 'projects/' + projectId + '/stories/' + storyId + '/activity', {
 		qs: options || {}
 	}, callback);
 };
 
+/**
+ * Get API token owner activity
+ * @param  {Function} [callback]  function(error, events)
+ * @param  {Object}   [options]   Extra options
+ */
 Pivotal.prototype.getMyActivity = function getMyActivity(callback, options) {
 	this.api('get', 'my/activity', {
 		qs: options || {}
@@ -72,7 +100,7 @@ Pivotal.prototype.getMyActivity = function getMyActivity(callback, options) {
 };
 
 /**
- * Get tasks from Pivotal story
+ * Get tasks for story
  * @param  {String}   projectId Pivotal project id
  * @param  {String}   storyId   Pivotal story id
  * @param  {Function} [callback]  function(error, tasks)
@@ -81,15 +109,23 @@ Pivotal.prototype.getTasks = function getTasks(projectId, storyId, callback) {
 	this.api('get', 'projects/' + projectId + '/stories/' + storyId + '/tasks', {}, callback);
 };
 
+/**
+ * Get paginated iterations for project
+ * @param  {String}   projectId   Pivotal project id
+ * @param  {Object}   [options]   Extra options
+ * @param  {Function} [callback]  function(iterations, pagination, callback(error or true to stop pagination))
+ * @param  {Function} [completed] function(error)
+ * @param  {Integer}  [offset]    Initial pagination offset
+ * @param  {Integer}  [limit]     Pagination limit for each response
+ */
 Pivotal.prototype.getIterations = function getIterations(projectId, options, callback, completed, offset, limit) {
 	this.paginated('projects/' + projectId + '/iterations', offset || 0, limit || 128, options, callback, completed);
 };
 
 /**
- * Get current iteration stories from Pivotal project
- * @param  {String}   projectId projectId Pivotal project id
- * @param  {Function} callback  [description]
- * @return {[type]}             [description]
+ * Get current iteration stories from project
+ * @param  {String} projectId Pivotal project id
+ * @param  {Function} [callback]  function(error, iterations)
  */
 Pivotal.prototype.getCurrentIterations = function(projectId, callback) {
 	this.api('get', 'projects/' + projectId + '/iterations', {
@@ -108,12 +144,17 @@ Pivotal.prototype.getCurrentIterations = function(projectId, callback) {
 	});
 };
 
+/**
+ * Get memberships for project
+ * @param  {String}   projectId Pivotal project id
+ * @param  {Function} [callback]  function(error, memberships)
+ */
 Pivotal.prototype.getMemberships = function updateStory(projectId, callback) {
 	this.api('get', 'projects/' + projectId + '/memberships', {}, callback);
 };
 
 /**
- * Get comments from Pivotal story
+ * Get comments from story
  * @param  {String}   projectId Pivotal project id
  * @param  {String}   storyId   Pivotal story id
  * @param  {Function} [callback]  function(error, comments)
@@ -136,7 +177,7 @@ Pivotal.prototype.exportStories = function exportStories(stories, callback) {
 };
 
 /**
- * Post attachment to Pivotal story
+ * Post attachment to story
  * @param  {String}   projectId Pivotal project id
  * @param  {String}   storyId   Pivotal story id
  * @param  {String}   filepath  Path of attachment
@@ -176,7 +217,7 @@ Pivotal.prototype.postAttachment = function postAttachment(projectId, storyId, f
 };
 
 /**
- * Get all labels in Pivotal project
+ * Get all labels in project
  * @param  {String}   projectId Pivotal project id
  * @param  {Function} [callback]  function(error, labels)
  */
@@ -185,9 +226,9 @@ Pivotal.prototype.getLabels = function getLabels(projectId, callback) {
 };
 
 /**
- * Create Pivotal label
+ * Create label
  * @param  {String}   projectId Pivotal project id
- * @param  {[type]}   name      Name of label
+ * @param  {String}   name      Name of label
  * @param  {Function} [callback]  function(error, label)
  */
 Pivotal.prototype.createLabel = function createStory(projectId, name, callback) {
@@ -212,19 +253,20 @@ Pivotal.prototype.createStory = function createStory(projectId, params, callback
 
 Pivotal.prototype.paginated = function(path, offset, limit, options, callback, completed) {
 	var that = this;
-	this.api('get', path, {
+	var _options = {
 		qs: _.extend({
 			offset: offset,
 			limit: limit,
 			envelope: true
 		}, options)
-	}, function(err, res) {
+	};
+	this.api('get', path, _options, function(err, res) {
 		if (err || !res.pagination) {
 			completed && completed(err || res);
 		} else {
 			offset += res.pagination.returned;
-			callback && callback(null, res.data, res.pagination, function(cont) {
-				if (cont) {
+			callback && callback(res.data, res.pagination, function(err) {
+				if (!err) {
 					var left = res.pagination.total - offset;
 					if (left > 0) {
 						that.paginated(path, offset, Math.min(left, limit), options, callback, completed);
@@ -232,7 +274,7 @@ Pivotal.prototype.paginated = function(path, offset, limit, options, callback, c
 						completed && completed();
 					}
 				} else {
-					completed && completed();
+					completed && completed(err);
 				}
 			});
 		}

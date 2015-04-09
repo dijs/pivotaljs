@@ -5,17 +5,21 @@ Pivotal Tracker API for V5
 
 ### Documentation
 
-<http://rompetoto.github.io/pivotaljs>
+<http://dijs.github.io/pivotaljs>
 
-### Usage
+### Installation
 
 ```
+npm install pivotaljs
+```
 
-var Pivotal = require("pivotaljs");
-var pivotal = new Pivotal(apiToken);
+### Example Usage
 
-pivotal.getStories("1234", {}, function(err, stories){
-	// Do something...
+```
+var Pivotal = require('pivotaljs');
+var pivotal = new Pivotal('<API Token>');
+
+pivotal.getStory("<Story ID>", function(err, story){
+	// Do great things...
 });
-
 ```

@@ -1,6 +1,6 @@
 {
   "name": "pivotaljs",
-  "version": "0.0.11",
+  "version": "1.0.0",
   "description": "Pivotal Tracker API for V5",
   "repository": "https://github.com/dijs/pivotaljs",
   "keywords": [
@@ -12,16 +12,19 @@
   ],
   "author": "Richard van der Dys",
   "scripts": {
-    "test": "node node_modules/mocha/bin/mocha test/"
+    "test": "node node_modules/mocha/bin/mocha test/",
+    "generate-docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose"
   },
   "dependencies": {
     "request": "latest",
     "underscore": "latest"
   },
   "devDependencies": {
+    "jsdoc": "^3.3.0-beta3",
+    "minami": "^1.1.0",
     "mocha": "latest",
-    "should": "latest",
-    "nock": "latest"
+    "nock": "latest",
+    "should": "latest"
   },
   "main": "index.js"
 }
