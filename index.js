@@ -226,6 +226,32 @@ Pivotal.prototype.getLabels = function getLabels(projectId, callback) {
 };
 
 /**
+ * Get labels on story
+ * @param  {String}   projectId Pivotal project id
+ * @param  {String}   storyId   Pivotal story id
+ * @param  {Function} [callback]  function(error, labels)
+ */
+Pivotal.prototype.getStoryLabels = function getStoryLabels(projectId, storyId, callback) {
+	this.api('get', 'projects/' + projectId + '/stories/' + storyId + '/labels', {}, callback);
+};
+
+/**
+ * Add story label
+ * @param  {String}   projectId Pivotal project id
+ * @param  {String}   storyId   Pivotal story id
+ * @param  {String}   name      Name of label
+ * @param  {Function} [callback]  function(error, label)
+ */
+Pivotal.prototype.addStoryLabel = function addStoryLabel(projectId, storyId, name, callback) {
+  this.api('post', 'projects/' + projectId + '/stories/' + storyId + '/labels', {
+    body: {
+      name: name
+    }
+  }, callback);
+};
+
+
+/**
  * Create label
  * @param  {String}   projectId Pivotal project id
  * @param  {String}   name      Name of label
