@@ -110,6 +110,23 @@ Pivotal.prototype.getTasks = function getTasks(projectId, storyId, callback) {
 };
 
 /**
+ * Add story task
+ * @param  {String}   projectId   Pivotal project id
+ * @param  {String}   storyId     Pivotal story id
+ * @param  {String}   description Description
+ * @param  {int}      position    Position
+ * @param  {Function} [callback]  function(error, label)
+ */
+Pivotal.prototype.addTask = function addTask(projectId, storyId, description, position, callback) {
+  this.api('post', 'projects/' + projectId + '/stories/' + storyId + '/tasks', {
+    body: {
+      description: description,
+			position: position
+    }
+  }, callback);
+};
+
+/**
  * Get paginated iterations for project
  * @param  {String}   projectId   Pivotal project id
  * @param  {Object}   [options]   Extra options
