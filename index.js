@@ -33,6 +33,16 @@ Pivotal.prototype.updateStory = function updateStory(projectId, storyId, params,
 };
 
 /**
+ * Delete a story
+ * @param  {String}   projectId Pivotal project id
+ * @param  {String}   storyId   Pivotal story id
+ * @param  {Function} [callback]  function(error, response)
+ */
+Pivotal.prototype.deleteStory = function deleteStory(projectId, storyId, callback) {
+	this.api('delete', 'projects/' + projectId + '/stories/' + storyId, {}, callback);
+};
+
+/**
  * Obtains a story
  * @param  {String}   storyId   Pivotal story id
  * @param  {Function} [callback]  function(error, response)
