@@ -154,7 +154,7 @@ Pivotal.prototype.getIterations = function getIterations(projectId, options, cal
  * @param  {String} projectId Pivotal project id
  * @param  {Function} [callback]  function(error, iterations)
  */
-Pivotal.prototype.getCurrentIterations = function(projectId, callback) {
+Pivotal.prototype.getCurrentIterations = function getCurrentIterations(projectId, callback) {
 	this.api('get', 'projects/' + projectId + '/iterations', {
 		qs: {
 			scope: 'current',
@@ -176,7 +176,7 @@ Pivotal.prototype.getCurrentIterations = function(projectId, callback) {
  * @param  {String}   projectId Pivotal project id
  * @param  {Function} [callback]  function(error, memberships)
  */
-Pivotal.prototype.getMemberships = function updateStory(projectId, callback) {
+Pivotal.prototype.getMemberships = function getMemberships(projectId, callback) {
 	this.api('get', 'projects/' + projectId + '/memberships', {}, callback);
 };
 
@@ -186,7 +186,7 @@ Pivotal.prototype.getMemberships = function updateStory(projectId, callback) {
  * @param  {String}   storyId   Pivotal story id
  * @param  {Function} [callback]  function(error, comments)
  */
-Pivotal.prototype.getComments = function getStories(projectId, storyId, callback) {
+Pivotal.prototype.getComments = function getComments(projectId, storyId, callback) {
 	this.api('get', 'projects/' + projectId + '/stories/' + storyId + '/comments', {}, callback);
 };
 
@@ -284,7 +284,7 @@ Pivotal.prototype.addStoryLabel = function addStoryLabel(projectId, storyId, nam
  * @param  {String}   name      Name of label
  * @param  {Function} [callback]  function(error, label)
  */
-Pivotal.prototype.createLabel = function createStory(projectId, name, callback) {
+Pivotal.prototype.createLabel = function createLabel(projectId, name, callback) {
 	this.api('post', 'projects/' + projectId + '/labels', {
 		body: {
 			name: name
@@ -304,7 +304,7 @@ Pivotal.prototype.createStory = function createStory(projectId, params, callback
 	}, callback);
 };
 
-Pivotal.prototype.paginated = function(path, offset, limit, options, callback, completed) {
+Pivotal.prototype.paginated = function paginated(path, offset, limit, options, callback, completed) {
 	var that = this;
 	var _options = {
 		qs: _.extend({
