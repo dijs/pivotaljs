@@ -191,6 +191,70 @@ Pivotal.prototype.getComments = function getComments(projectId, storyId, callbac
 };
 
 /**
+ * Get reviews from story
+ * https://developer.pivotaltracker.com/help/api/rest/v5#projects_project_id_stories_story_id_reviews_get
+ * @param  {String}   projectId Pivotal project id
+ * @param  {String}   storyId   Pivotal story id
+ * @param  {Function} [callback]  function(error, reviews)
+ */
+Pivotal.prototype.getReviews = function getReviews(projectId, storyId, callback) {
+	this.api('get', 'projects/' + projectId + '/stories/' + storyId + '/reviews', {}, callback);
+};
+
+/**
+ * Add story review
+ * https://developer.pivotaltracker.com/help/api/rest/v5#projects_project_id_stories_story_id_reviews_post
+ * @param  {String}   projectId   Pivotal project id
+ * @param  {String}   storyId     Pivotal story id
+ * @param  {Object}   [params]  Extra parameters: review_type_id, reviewer_id, status
+ * @param  {Function} [callback]  function(error, review)
+ */
+Pivotal.prototype.addReview = function addReview(projectId, storyId, params, callback) {
+	this.api('post', 'projects/' + projectId + '/stories/' + storyId + '/reviews', {
+	  body: params || {}
+	}, callback);
+};
+
+/**
+ * Obtains a review
+ * https://developer.pivotaltracker.com/help/api/rest/v5#projects_project_id_stories_story_id_reviews_review_id_get
+ * @param  {String}   projectId Pivotal project id
+ * @param  {String}   storyId   Pivotal story id
+ * @param  {String}   reviewId   Pivotal review id
+ * @param  {Function} [callback]  function(error, review)
+ */
+Pivotal.prototype.getReview = function getReview(projectId, storyId, reviewId, callback) {
+	this.api('get', 'projects/' + projectId + '/stories/' + storyId + '/reviews/' + reviewId, {}, callback);
+};
+
+/**
+ * Update a review
+ * https://developer.pivotaltracker.com/help/api/rest/v5#projects_project_id_stories_story_id_reviews_review_id_put
+ * @param  {String}   projectId Pivotal project id
+ * @param  {String}   storyId   Pivotal story id
+ * @param  {String}   reviewId   Pivotal review id
+ * @param  {Object}   [params]  Extra parameters
+ * @param  {Function} [callback]  function(error, review)
+ */
+Pivotal.prototype.updateReview = function updateReview(projectId, storyId, reviewId, params, callback) {
+	this.api('put', 'projects/' + projectId + '/stories/' + storyId + '/reviews/' + reviewId, {
+		json: params
+	}, callback);
+};
+
+/**
+ * Delete a review
+ * https://developer.pivotaltracker.com/help/api/rest/v5#projects_project_id_stories_story_id_reviews_review_id_delete
+ * @param  {String}   projectId Pivotal project id
+ * @param  {String}   storyId   Pivotal story id
+ * @param  {String}   reviewId   Pivotal review id
+ * @param  {Function} [callback]  function(error, response)
+ */
+Pivotal.prototype.deleteReview = function deleteReview(projectId, storyId, reviewId, callback) {
+	this.api('delete', 'projects/' + projectId + '/stories/' + storyId + '/reviews/' + reviewId, {}, callback);
+};
+
+/**
  * Export stories from Pivotal
  * @param  {String[]}  stories   List of story id's
  * @param  {Function}  [callback]  function(error, response)
